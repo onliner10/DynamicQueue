@@ -33,6 +33,9 @@ namespace DynamicQueue
         public RbtNode<TKey,TValue> Right { get; set; }
         public RbtNode<TKey,TValue> Parent { get; set; }
 
+        public void MarkBlack() => IsRed = false;
+        public void MarkRed() => IsRed = true;
+
         public bool IsBlack => !IsRed;
         public bool IsRed { get; set; }
 

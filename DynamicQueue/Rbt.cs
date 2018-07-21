@@ -38,6 +38,64 @@ namespace DynamicQueue
                 parent.Left = node;
             else
                 parent.Right = node;
+
+            FixTree(node);
+        }
+
+        private void FixTree(RbtNode<TKey, TValue> node)
+        {
+            while(node.Parent.IsRed)
+            {
+                if(node.Parent == node.Parent.Parent.Left)
+                {
+                    var aunt = node.Parent.Parent.Right;
+                    if(aunt.IsRed)
+                    {
+                        node.Parent.MarkBlack();
+                        aunt.MarkBlack();
+                        node.Parent.Parent.MarkRed();
+
+                        node = node.Parent.Parent;
+                    }
+                    else 
+                    {
+                        if(node == node.Parent.Right)
+                        {
+                            node = node.Parent;
+                            LeftRotate(node);
+                        }
+
+                        node.Parent.MarkBlack();
+                        node.Parent.Parent.MarkRed();
+                        RightRotate(node.Parent.Parent);
+                    }
+                } else
+                {
+                    var aunt = node.Parent.Parent.Left;
+                    if(aunt.IsRed)
+                    {
+                        node.Parent.MarkBlack();
+                        aunt.MarkBlack();
+                        node.Parent.Parent.MarkRed();
+
+                        node = node.Parent.Parent;
+                    }
+                    else 
+                    {
+                        if(node == node.Parent.Left)
+                        {
+                            node = node.Parent;
+                            RightRotate(node);
+                        }
+
+                        node.Parent.MarkBlack();
+                        node.Parent.Parent.MarkRed();
+                        LeftRotate(node.Parent.Parent);
+                    }
+                }
+            }
+
+            _root.MarkBlack();
         }
 
         public RbtNode<TKey, TValue> Find(TKey key)
