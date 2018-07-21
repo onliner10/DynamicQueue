@@ -49,5 +49,53 @@ namespace DynamicQueue.Tests
 
             CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
         }
+
+        [Test]
+        public void RightRotation_PreservesTreeStructure()
+        {
+            var rbt = new Rbt<int, int>();
+
+            for (int i = 10; i >= 0;  i--)
+            {
+                rbt.Insert(i, i);
+            }
+
+            var n = rbt.Find(5);
+            rbt.RightRotate(n);
+
+            CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
+        }
+
+        [Test]
+        public void LeftRotation_PreservesTreeStructure()
+        {
+            var rbt = new Rbt<int, int>();
+
+            for (int i = 0; i <= 10;  i++)
+            {
+                rbt.Insert(i, i);
+            }
+
+            var n = rbt.Find(5);
+            rbt.LeftRotate(n);
+
+            CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
+        }
+
+        [Test]
+        public void LeftThenRightRotation_PreservesTreeStructure()
+        {
+            var rbt = new Rbt<int, int>();
+
+            for (int i = 0; i <= 10;  i++)
+            {
+                rbt.Insert(i, i);
+            }
+
+            rbt.LeftRotate(rbt.Find(5));
+            rbt.RightRotate(rbt.Find(6));
+
+            CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
+        }
     }
 }

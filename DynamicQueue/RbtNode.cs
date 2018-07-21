@@ -15,6 +15,7 @@ namespace DynamicQueue
             Value = value;
             Left = Nil;
             Right = Nil;
+            Parent = Nil;
             IsRed = true;
         }
 

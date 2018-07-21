@@ -8,7 +8,7 @@ namespace DynamicQueue
 {
     internal class Rbt<TKey, TValue> : IEnumerable<TValue> where TKey : IComparable<TKey>
     {
-        private RbtNode<TKey, TValue> _root = null;
+        private RbtNode<TKey, TValue> _root = Nil;
         private static RbtNode<TKey, TValue> Nil = RbtNode<TKey, TValue>.Nil;
 
         public RbtNode<TKey, TValue> Root => _root;
@@ -19,7 +19,7 @@ namespace DynamicQueue
             var parent = Nil;
             var x = _root;
 
-            while(x != null && x != Nil)
+            while(x != Nil)
             {
                 parent = x;
 
@@ -40,50 +40,74 @@ namespace DynamicQueue
                 parent.Right = node;
         }
 
-        private void LeftRotate(RbtNode<TKey, TValue> x)
+        public RbtNode<TKey, TValue> Find(TKey key)
         {
-            var y = x.Right;
-            x.Right = y.Left;
+            var node = _root;
+
+            while(node != Nil)
+            {
+                var comparision = key.CompareTo(node.Key);
+                if (comparision == 0)
+                    return node;
+                else if (comparision < 0)
+                    node = node.Left;
+                else
+                    node = node.Right;
+
+            }
+
+            return null;
+        }
+
+
+        public void LeftRotate(RbtNode<TKey, TValue> node)
+        {
+            if (node.Right == Nil) return; 
+
+            var y = node.Right;
+            node.Right = y.Left;
 
             if(y.Left != Nil) 
-                y.Left.Parent = x;
+                y.Left.Parent = node;
 
-            y.Parent = x.Parent;
-            if (x.Parent == Nil)
+            y.Parent = node.Parent;
+            if (node.Parent == Nil)
                 _root = y;
-            else if (x == x.Parent.Left)
-                x.Parent.Left = y;
+            else if (node == node.Parent.Left)
+                node.Parent.Left = y;
             else
-                x.Parent.Right = y;
+                node.Parent.Right = y;
 
-            y.Left = x;
-            x.Parent = y;
+            y.Left = node;
+            node.Parent = y;
         }
-        private void RightRotate(RbtNode<TKey, TValue> x)
+        public void RightRotate(RbtNode<TKey, TValue> node)
         {
-            var y = x.Left;
-            x.Left = y.Right;
+            if (node.Left == Nil) return;
+
+            var y = node.Left;
+            node.Left = y.Right;
 
             if(y.Right != Nil) 
-                y.Right.Parent = x;
+                y.Right.Parent = node;
 
-            y.Parent = x.Parent;
-            if (x.Parent == Nil)
+            y.Parent = node.Parent;
+            if (node.Parent == Nil)
                 _root = y;
-            else if (x == x.Parent.Left)
-                x.Parent.Left = y;
+            else if (node == node.Parent.Left)
+                node.Parent.Left = y;
             else
-                x.Parent.Right = y;
+                node.Parent.Right = y;
 
-            y.Left = x;
-            x.Parent = y;
+            y.Right = node;
+            node.Parent = y;
         }
 
         public RbtNode<TKey, TValue> Max()
         {
             var result = _root;
             var x = _root;
-            while(x != null && x != Nil)
+            while(x != Nil)
             {
                 result = x;
                 x = x.Right;
@@ -93,7 +117,7 @@ namespace DynamicQueue
 
         private static IEnumerable<TValue> InOrder(RbtNode<TKey, TValue> n)
         {
-            if (n == null || n == Nil) yield break;
+            if (n == Nil) yield break;
             
             if(n.Left != Nil)
             {
