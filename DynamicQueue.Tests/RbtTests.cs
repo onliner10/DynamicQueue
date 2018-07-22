@@ -15,7 +15,7 @@ namespace DynamicQueue.Tests
         {
             const int key = 1;
             const int val = 2;
-            var rbt = new Rbt<int, int>();
+            var rbt = new Rbt<int, int>(Comparer<int>.Create((a,b) => a.CompareTo(b)));
             rbt.Insert(key, val);
 
             var max = rbt.Max();
@@ -27,7 +27,7 @@ namespace DynamicQueue.Tests
         [Test]
         public void WhenTwoNodesAdded_ItRetrurnsMaximum()
         {
-            var rbt = new Rbt<int, int>();
+            var rbt = new Rbt<int, int>(Comparer<int>.Create((a,b) => a.CompareTo(b)));
             rbt.Insert(1, 1);
             rbt.Insert(10, 10);
 
@@ -38,9 +38,18 @@ namespace DynamicQueue.Tests
         }
 
         [Test]
+        public void WhenNoNodesAdded_ItRetrurnsNull_AsMaximum()
+        {
+            var rbt = new Rbt<int, int>(Comparer<int>.Create((a,b) => a.CompareTo(b)));
+
+            var max = rbt.Max();
+
+            Assert.IsNull(max);
+        }
+        [Test]
         public void InOrderTraversal()
         {
-            var rbt = new Rbt<int, int>();
+            var rbt = new Rbt<int, int>(Comparer<int>.Create((a,b) => a.CompareTo(b)));
 
             for (int i = 10; i >= 0;  i--)
             {
@@ -51,51 +60,21 @@ namespace DynamicQueue.Tests
         }
 
         [Test]
-        public void RightRotation_PreservesTreeStructure()
+        public void DeleteTest()
         {
-            var rbt = new Rbt<int, int>();
+            var rbt = new Rbt<int, int>(Comparer<int>.Create((a, b) => a.CompareTo(b)));
 
-            for (int i = 10; i >= 0;  i--)
+            for (int i = 10; i >= 0; i--)
             {
                 rbt.Insert(i, i);
             }
 
-            var n = rbt.Find(5);
-            rbt.RightRotate(n);
+            rbt.Delete(rbt.Find(0));
+            rbt.Delete(rbt.Find(5));
+            rbt.Delete(rbt.Find(10));
 
-            CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
+            CollectionAssert.AreEqual(Enumerable.Range(1, 9).Except(new[] { 5 }), rbt);
         }
 
-        [Test]
-        public void LeftRotation_PreservesTreeStructure()
-        {
-            var rbt = new Rbt<int, int>();
-
-            for (int i = 0; i <= 10;  i++)
-            {
-                rbt.Insert(i, i);
-            }
-
-            var n = rbt.Find(5);
-            rbt.LeftRotate(n);
-
-            CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
-        }
-
-        [Test]
-        public void LeftThenRightRotation_PreservesTreeStructure()
-        {
-            var rbt = new Rbt<int, int>();
-
-            for (int i = 0; i <= 10;  i++)
-            {
-                rbt.Insert(i, i);
-            }
-
-            rbt.LeftRotate(rbt.Find(5));
-            rbt.RightRotate(rbt.Find(6));
-
-            CollectionAssert.AreEqual(Enumerable.Range(0,11), rbt);
-        }
     }
 }
